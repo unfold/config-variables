@@ -6,7 +6,9 @@
   "scripts": {
     "test": "ava",
     "watch": "npm run build -- --watch",
-    "build": "babel src --out-dir lib"
+    "prebuild": "rm -rf lib",
+    "build": "babel src --out-dir lib",
+    "prepublish": "npm run build"
   },
   "ava": {
     "require": "babel-register",
