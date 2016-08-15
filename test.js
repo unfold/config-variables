@@ -1,44 +1,28 @@
-/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable import/no-extraneous-dependencies, global-require */
 
 import test from 'ava'
-import {
-  getAppJsonVariables,
-  getMissingRequiredVariables,
-} from './src/helpers'
+import setup from './src/setup'
+import { flattenAppjsonVariables } from './src/helpers'
 
-const appJsonFixture = {
-  env: {
-    first: 1,
-    second: {
-      value: 2,
-    },
-    third: {
-      required: true,
-    },
-    fourth: {
-      value: 4,
-      'required.development': true,
-    },
-    fifth: {
-      'required.production': true,
-    },
-  },
-}
-
-test('Extracts all app.json variables', t => {
-  const variables = getAppJsonVariables(appJsonFixture)
-  t.deepEqual(variables, { first: 1, second: 2, fourth: 4 })
+test('Silently fail if no app.json or .env file', invarant => {
+  process.chdir(`${__dirname}/fixtures/empty`)
+  invarant.notThrows(setup)
 })
 
-test('Extracts all missing required app.json variables', t => {
-  const required = getMissingRequiredVariables(appJsonFixture)
-  t.deepEqual(required.map(v => v.name), ['third', 'fourth'])
+test('Flattens Appjson variables', invarant => {
+  const appJson = { env: { a: 1, b: { value: 2 } } }
+  invarant.deepEqual(flattenAppjsonVariables(appJson), { a: 1, b: 2 })
 })
 
-test.todo('app.json variables are included')
-test.todo('.env variables are included')
+test('.env overwrites app.json variables', invarant => {
+  process.chdir(`${__dirname}/fixtures/config-sets-variable`)
+  setup()
+  invarant.is(process.env.VARIABLE, 'ENV_SETS_VARIABLE')
+})
 
-test.todo('process.env should have presedence over .env')
-test.todo('.env should have presedence over app.json')
-
-test.todo('It should warn if required variables are missing')
+test('process.env variables does not get overwritten', invarant => {
+  process.env.VARIABLE = 'PROCESS_ENV_SETS_VARIABLE'
+  process.chdir(`${__dirname}/fixtures/config-sets-variable`)
+  setup()
+  invarant.is(process.env.VARIABLE, 'PROCESS_ENV_SETS_VARIABLE')
+})

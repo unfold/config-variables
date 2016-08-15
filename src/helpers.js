@@ -1,14 +1,21 @@
+import { isError, attempt, reduce, isObject, isUndefined } from 'lodash'
+import dotenv from 'dotenv'
+import fs from 'fs'
 import chalk from 'chalk'
-import {
-  isObject,
-  isUndefined,
-  reduce,
-} from 'lodash'
 
-const NODE_ENV = process.env.NODE_ENV || 'development'
+export const readAppjson = filePath => {
+  // eslint-disable-next-line global-require
+  const appjson = attempt(() => require(filePath))
+  return isError(appjson) ? undefined : appjson
+}
 
-export const getAppJsonVariables = appJson =>
-  reduce(appJson.env, (variables, variable, name) => {
+export const readDotEnv = filePath => {
+  const config = attempt(() => dotenv.parse(fs.readFileSync(filePath)))
+  return isError(config) ? undefined : config
+}
+
+export const flattenAppjsonVariables = (appjson = {}) =>
+  reduce(appjson.env, (variables, variable, name) => {
     const value = isObject(variable) ? variable.value : variable
 
     if (!isUndefined(value)) {
@@ -18,9 +25,16 @@ export const getAppJsonVariables = appJson =>
     return variables
   }, {})
 
-export const getMissingRequiredVariables = appJson =>
-  reduce(appJson.env, (missingVariables, variable, name) => {
+export const injectConfig = config => {
+  Object.keys(config).forEach(name => {
+    process.env[name] = process.env[name] || config[name]
+  })
+}
+
+export const getMissingVariables = (appjson = {}) =>
+  reduce(appjson.env, (missingVariables, variable, name) => {
     if (!isObject(variable)) return missingVariables
+    const NODE_ENV = process.env.NODE_ENV || 'development'
     const required = variable.required || variable[`required.${NODE_ENV}`]
     const missing = !process.env[name]
 
@@ -30,7 +44,6 @@ export const getMissingRequiredVariables = appJson =>
 
     return missingVariables
   }, [])
-
 
 /* eslint-disable no-console */
 
@@ -43,8 +56,14 @@ const print = (message, pad, background = 'bgRed') => {
   }
 }
 
+
 export const reportMissingVariables = missingVariables => {
   const count = missingVariables.length
+
+  if (!count) {
+    return
+  }
+
   print(`Missing ${count} required variable${count > 1 ? 's' : ''}:`, true)
 
   missingVariables.map(({ name, description }) => {
@@ -58,3 +77,5 @@ export const reportMissingVariables = missingVariables => {
 
   process.exit(1)
 }
+
+/* eslint-enable no-console */
