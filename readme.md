@@ -2,7 +2,7 @@
 Config management for your project. Leverages [app.json-schema](https://devcenter.heroku.com/articles/app-json-schema) for requirements, descriptions and default values, and .env file for local overwrite for development.
 
 ## Setup
-Install config-variables from NPM
+Install [config-variables](https://www.npmjs.com/package/config-variables) from NPM
 `npm install --save config-variables`
 
 Require the package in your entry file
@@ -46,7 +46,7 @@ AUTH_KEY=okp3vopq23s2sd3es4j42k
 ```
 
 ## Custom paths
-You can set custom paths in `config-variables/lib/setup` If you have a multiple configs in a [monorepo](https://github.com/babel/babel/blob/master/doc/design/monorepo.md) or want don't want to store your configs at the root.
+You can set custom paths in `config-variables/lib/setup` If you have a multiple configs in a [monorepo](https://github.com/babel/babel/blob/master/doc/design/monorepo.md) or don't want to store your configs at the root.
 
 ```js
 const configSetup = require('config-variables/lib/setup')
