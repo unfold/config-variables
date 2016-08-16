@@ -1,5 +1,5 @@
 # Config Variables
-Ensures your config variables are accessible at ` process.env[variable]`. Leverages [app.json-schema](https://devcenter.heroku.com/articles/app-json-schema) for requirements, descriptions and default values, and .env file for local overwrite for development.
+Ensures your config variables are accessible at ` process.env[variable]`. Leverages [app.json-schema](https://devcenter.heroku.com/articles/app-json-schema) for requirements, descriptions and default values, and .env file for local overwrite in development.
 
 ## Setup
 Install [config-variables](https://www.npmjs.com/package/config-variables) from NPM
