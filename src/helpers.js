@@ -74,8 +74,6 @@ export const reportMissingVariables = missingVariables => {
   }).forEach(row => print(`${row}`))
 
   print('Use .env file in root directory to set config variables for development', true)
-
-  process.exit(1)
 }
 
 /* eslint-enable no-console */
