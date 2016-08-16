@@ -1,5 +1,5 @@
 # Config Variables
-Config management for your project. Leverages [app.json-schema](https://devcenter.heroku.com/articles/app-json-schema) for requirements, descriptions and default values, and .env file for local overwrite for development.
+Ensures your config variables are accessible at ` process.env[variable]`. Leverages [app.json-schema](https://devcenter.heroku.com/articles/app-json-schema) for requirements, descriptions and default values, and .env file for local overwrite for development.
 
 ## Setup
 Install [config-variables](https://www.npmjs.com/package/config-variables) from NPM
@@ -7,7 +7,7 @@ Install [config-variables](https://www.npmjs.com/package/config-variables) from 
 npm install --save config-variables
 ```
 
-Require the package in your entry file
+Either require the package in your entry file
 ```js
 // src/index.js
 require('config-variables')
