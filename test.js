@@ -1,8 +1,11 @@
-/* eslint-disable import/no-extraneous-dependencies, global-require */
+/* eslint-disable import/no-extraneous-dependencies, global-require, import/newline-after-import */
 
 import test from 'ava'
 import setup from './src/setup'
-import { flattenAppjsonVariables } from './src/helpers'
+import {
+  flattenAppjsonVariables,
+  getMissingVariables,
+} from './src/helpers'
 
 test('Silently fail if no app.json or .env file', invarant => {
   process.chdir(`${__dirname}/fixtures/empty`)
@@ -25,4 +28,11 @@ test('process.env variables does not get overwritten', invarant => {
   process.chdir(`${__dirname}/fixtures/config-sets-variable`)
   setup()
   invarant.is(process.env.VARIABLE, 'PROCESS_ENV_SETS_VARIABLE')
+})
+
+test('getMissingVariables returns only missing required variables', invarant => {
+  const appjson = require('./fixtures/missing-required-variables/app.json')
+  process.chdir(`${__dirname}/fixtures/missing-required-variables`)
+  setup({ silent: true })
+  invarant.is(getMissingVariables(appjson).length, 1)
 })

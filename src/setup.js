@@ -11,6 +11,7 @@ import {
 export default ({
   appJsonPath = path.join(process.cwd(), 'app.json'),
   dotEnvPath = path.join(process.cwd(), '.env'),
+  silent = false,
 } = {}) => {
   const appjson = readAppjson(appJsonPath)
   const envConfig = readDotEnv(dotEnvPath)
@@ -19,5 +20,7 @@ export default ({
   const config = { ...appConfig, ...envConfig }
   injectConfig(config)
 
-  reportMissingVariables(getMissingVariables(appjson))
+  if (!silent) {
+    reportMissingVariables(getMissingVariables(appjson))
+  }
 }

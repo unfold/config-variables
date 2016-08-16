@@ -1,0 +1,10 @@
+{
+  "env": {
+    "REQUIRED_MISSING_VARIABLE": {
+      "required": true
+    },
+    "REQUIRED_NOT_MISSING_VARIABLE": {
+      "required": true
+    }
+  }
+}

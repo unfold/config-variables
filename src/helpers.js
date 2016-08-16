@@ -64,15 +64,15 @@ export const reportMissingVariables = missingVariables => {
     return
   }
 
-  print(`Missing ${count} required variable${count > 1 ? 's' : ''}:`, true)
-
-  missingVariables.map(({ name, description }) => {
+  const rows = missingVariables.map(({ name, description }) => {
     if (description) {
       return `${name}: ${chalk.dim(description)}`
     }
     return name
-  }).forEach(row => print(`${row}`))
+  })
 
+  print(`Missing ${count} required variable${count > 1 ? 's' : ''}:`, true)
+  rows.forEach(row => print(row))
   print('Use .env file in root directory to set config variables for development', true)
 }
 
