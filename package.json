@@ -1,6 +1,6 @@
 {
   "name": "config-variables",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "description": "Config for you project that cascades app.json, .env and process.env",
   "main": "lib/autoSetup.js",
   "scripts": {
