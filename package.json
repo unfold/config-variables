@@ -4,7 +4,8 @@
   "description": "Config for you project that cascades app.json, .env and process.env",
   "main": "lib/autoSetup.js",
   "scripts": {
-    "test": "ava",
+    "lint": "eslint src test.js",
+    "test": "npm run lint && ava",
     "watch": "npm run build -- --watch",
     "prebuild": "rm -rf lib",
     "build": "babel src --out-dir lib",
