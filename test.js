@@ -1,11 +1,12 @@
 /* eslint-disable import/no-extraneous-dependencies, global-require, import/newline-after-import, max-len */
 
 import test from 'ava'
-import hook from 'hook-std'
 import setup from './src/setup'
 import {
   flattenAppjsonVariables,
+  getConfigKeys,
   getMissingVariables,
+  readDotEnv,
 } from './src/helpers'
 
 test('Silently fail if no app.json or .env file', assert => {
@@ -34,44 +35,19 @@ test('process.env variables does not get overwritten', assert => {
 
 test('getMissingVariables returns only missing required variables', assert => {
   const appjson = require('./fixtures/missing-required-variables/app.json')
-  const buffer = []
-  const release = hook.stdout({ silent: true }, string => buffer.push(string))
-
-  const expected = [
-    '\u001b[41m \u001b[49m\n\u001b[41m \u001b[49m   Missing 1 required variable:\n\u001b[41m \u001b[49m\n',
-    '\u001b[41m \u001b[49m   REQUIRED_MISSING_VARIABLE\n',
-    '\u001b[41m \u001b[49m\n\u001b[41m \u001b[49m   Use .env file in root directory to set config variables for development\n\u001b[41m \u001b[49m\n',
-    ' \n    Config variables:\n \n',
-    '    REQUIRED_NOT_MISSING_VARIABLE = \u001b[2mVALUE\u001b[22m\n',
-  ]
-
   process.chdir(`${__dirname}/fixtures/missing-required-variables`)
 
-  setup()
-  release()
+  setup({ warn: false, verbose: false })
 
   assert.is(getMissingVariables(appjson).length, 1)
-  assert.deepEqual(buffer, expected)
 })
 
+test('getConfigKeys returns keys from app.json and .env', assert => {
+  const appjson = require('./fixtures/merged/app.json')
+  const dotEnv = readDotEnv('./fixtures/merged/.env')
 
-test('reportCurrentConfig reports current config', assert => {
-  process.chdir(`${__dirname}/fixtures/merged`)
-  process.env.VARIABLE = 'PROCESS_ENV_SETS_VARIABLE'
+  const actual = getConfigKeys(appjson, dotEnv)
+  const expected = ['APP_VARIABLE', 'NODE_ENV', 'VARIABLE']
 
-  const buffer = []
-  const release = hook.stdout({ silent: true }, string => buffer.push(string))
-
-  const expected = [
-    ' \n    Config variables:\n \n',
-    '    VARIABLE = \u001b[2mPROCESS_ENV_SETS_VARIABLE\u001b[22m\n',
-    '    APP_VARIABLE = \u001b[2mBAR\u001b[22m\n',
-    '    ENV_VARIABLE = \u001b[2mFOO\u001b[22m\n',
-  ]
-
-  setup()
-  release()
-  delete process.env.VARIABLE
-
-  assert.deepEqual(buffer, expected)
+  assert.deepEqual(actual, expected)
 })

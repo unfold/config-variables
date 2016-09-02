@@ -31,6 +31,12 @@ export const injectConfig = config => {
   })
 }
 
+export const getConfigKeys = (appjson, envConfig) => {
+  const appEnv = appjson ? appjson.env : {}
+
+  return Object.keys({ ...appEnv, ...envConfig })
+}
+
 export const getMissingVariables = (appjson = {}) =>
   reduce(appjson.env, (missingVariables, variable, name) => {
     if (!isObject(variable)) return missingVariables
@@ -59,17 +65,20 @@ const print = (message, pad, background) => {
 
 const warn = (message, pad) => print(message, pad, 'bgRed')
 
-export const reportCurrentConfig = (config) => {
-  const keys = Object.keys(config)
-
+export const reportCurrentConfig = keys => {
   if (!keys.length) {
     return
   }
 
-  const rows = keys.map(key => `${key} = ${chalk.dim(process.env[key])}`)
+  const rows = keys.map(key => {
+    const value = process.env[key] || chalk.dim('<not set>')
+
+    return `${chalk.green(key)} = ${value}`
+  })
 
   print('Config variables:', true)
   rows.forEach(row => print(row))
+  print('')
 }
 
 export const reportMissingVariables = missingVariables => {

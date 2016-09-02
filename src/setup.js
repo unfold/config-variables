@@ -7,6 +7,7 @@ import {
   reportMissingVariables,
   reportCurrentConfig,
   getMissingVariables,
+  getConfigKeys,
 } from './helpers'
 
 export default ({
@@ -27,6 +28,6 @@ export default ({
   }
 
   if (verbose) {
-    reportCurrentConfig(config)
+    reportCurrentConfig(getConfigKeys(appjson, envConfig))
   }
 }
