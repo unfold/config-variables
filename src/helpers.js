@@ -47,8 +47,9 @@ export const getMissingVariables = (appjson = {}) =>
 
 /* eslint-disable no-console */
 
-const print = (message, pad, background = 'bgRed') => {
-  const space = chalk[background](' ')
+const print = (message, pad, background) => {
+  const space = background ? chalk[background](' ') : ' '
+
   if (pad) {
     console.log(`${space}\n${space}   ${message}\n${space}`)
   } else {
@@ -56,6 +57,20 @@ const print = (message, pad, background = 'bgRed') => {
   }
 }
 
+const warn = (message, pad) => print(message, pad, 'bgRed')
+
+export const reportCurrentConfig = (config) => {
+  const keys = Object.keys(config)
+
+  if (!keys.length) {
+    return
+  }
+
+  const rows = keys.map(key => `${key} = ${chalk.dim(process.env[key])}`)
+
+  print('Config variables:', true)
+  rows.forEach(row => print(row))
+}
 
 export const reportMissingVariables = missingVariables => {
   const count = missingVariables.length
@@ -71,9 +86,9 @@ export const reportMissingVariables = missingVariables => {
     return name
   })
 
-  print(`Missing ${count} required variable${count > 1 ? 's' : ''}:`, true)
-  rows.forEach(row => print(row))
-  print('Use .env file in root directory to set config variables for development', true)
+  warn(`Missing ${count} required variable${count > 1 ? 's' : ''}:`, true)
+  rows.forEach(row => warn(row))
+  warn('Use .env file in root directory to set config variables for development', true)
 }
 
 /* eslint-enable no-console */

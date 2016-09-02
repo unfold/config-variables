@@ -1,0 +1,6 @@
+{
+  "env": {
+    "VARIABLE": "APP_JSON_SETS_VARIABLE",
+    "APP_VARIABLE": "BAR"
+  }
+}
