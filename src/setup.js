@@ -5,13 +5,16 @@ import {
   flattenAppjsonVariables,
   injectConfig,
   reportMissingVariables,
+  reportCurrentConfig,
   getMissingVariables,
+  getConfigKeys,
 } from './helpers'
 
 export default ({
   appJsonPath = path.join(process.cwd(), 'app.json'),
   dotEnvPath = path.join(process.cwd(), '.env'),
-  silent = false,
+  warn = true,
+  verbose = true,
 } = {}) => {
   const appjson = readAppjson(appJsonPath)
   const envConfig = readDotEnv(dotEnvPath)
@@ -20,7 +23,11 @@ export default ({
   const config = { ...appConfig, ...envConfig }
   injectConfig(config)
 
-  if (!silent) {
+  if (warn) {
     reportMissingVariables(getMissingVariables(appjson))
+  }
+
+  if (verbose) {
+    reportCurrentConfig(getConfigKeys(appjson, envConfig))
   }
 }

@@ -31,6 +31,12 @@ export const injectConfig = config => {
   })
 }
 
+export const getConfigKeys = (appjson, envConfig) => {
+  const appEnv = appjson ? appjson.env : {}
+
+  return Object.keys({ ...appEnv, ...envConfig })
+}
+
 export const getMissingVariables = (appjson = {}) =>
   reduce(appjson.env, (missingVariables, variable, name) => {
     if (!isObject(variable)) return missingVariables
@@ -47,8 +53,9 @@ export const getMissingVariables = (appjson = {}) =>
 
 /* eslint-disable no-console */
 
-const print = (message, pad, background = 'bgRed') => {
-  const space = chalk[background](' ')
+const print = (message, pad, background) => {
+  const space = background ? chalk[background](' ') : ' '
+
   if (pad) {
     console.log(`${space}\n${space}   ${message}\n${space}`)
   } else {
@@ -56,6 +63,23 @@ const print = (message, pad, background = 'bgRed') => {
   }
 }
 
+const warn = (message, pad) => print(message, pad, 'bgRed')
+
+export const reportCurrentConfig = keys => {
+  if (!keys.length) {
+    return
+  }
+
+  const rows = keys.map(key => {
+    const value = process.env[key] || chalk.dim('<not set>')
+
+    return `${chalk.green(key)} = ${value}`
+  })
+
+  print('Config variables:', true)
+  rows.forEach(row => print(row))
+  print('')
+}
 
 export const reportMissingVariables = missingVariables => {
   const count = missingVariables.length
@@ -71,9 +95,9 @@ export const reportMissingVariables = missingVariables => {
     return name
   })
 
-  print(`Missing ${count} required variable${count > 1 ? 's' : ''}:`, true)
-  rows.forEach(row => print(row))
-  print('Use .env file in root directory to set config variables for development', true)
+  warn(`Missing ${count} required variable${count > 1 ? 's' : ''}:`, true)
+  rows.forEach(row => warn(row))
+  warn('Use .env file in root directory to set config variables for development', true)
 }
 
 /* eslint-enable no-console */

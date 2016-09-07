@@ -1,38 +1,53 @@
-/* eslint-disable import/no-extraneous-dependencies, global-require, import/newline-after-import */
+/* eslint-disable import/no-extraneous-dependencies, global-require, import/newline-after-import, max-len */
 
 import test from 'ava'
 import setup from './src/setup'
 import {
   flattenAppjsonVariables,
+  getConfigKeys,
   getMissingVariables,
+  readDotEnv,
 } from './src/helpers'
 
-test('Silently fail if no app.json or .env file', invarant => {
+test('Silently fail if no app.json or .env file', assert => {
   process.chdir(`${__dirname}/fixtures/empty`)
-  invarant.notThrows(setup)
+  assert.notThrows(setup)
 })
 
-test('Flattens Appjson variables', invarant => {
+test('Flattens Appjson variables', assert => {
   const appJson = { env: { a: 1, b: { value: 2 } } }
-  invarant.deepEqual(flattenAppjsonVariables(appJson), { a: 1, b: 2 })
+  assert.deepEqual(flattenAppjsonVariables(appJson), { a: 1, b: 2 })
 })
 
-test('.env overwrites app.json variables', invarant => {
+test('.env overwrites app.json variables', assert => {
   process.chdir(`${__dirname}/fixtures/config-sets-variable`)
-  setup()
-  invarant.is(process.env.VARIABLE, 'ENV_SETS_VARIABLE')
+  setup({ warn: false, verbose: false })
+  assert.is(process.env.VARIABLE, 'ENV_SETS_VARIABLE')
 })
 
-test('process.env variables does not get overwritten', invarant => {
+test('process.env variables does not get overwritten', assert => {
   process.env.VARIABLE = 'PROCESS_ENV_SETS_VARIABLE'
   process.chdir(`${__dirname}/fixtures/config-sets-variable`)
-  setup()
-  invarant.is(process.env.VARIABLE, 'PROCESS_ENV_SETS_VARIABLE')
+  setup({ warn: false, verbose: false })
+  assert.is(process.env.VARIABLE, 'PROCESS_ENV_SETS_VARIABLE')
+  delete process.env.VARIABLE
 })
 
-test('getMissingVariables returns only missing required variables', invarant => {
+test('getMissingVariables returns only missing required variables', assert => {
   const appjson = require('./fixtures/missing-required-variables/app.json')
   process.chdir(`${__dirname}/fixtures/missing-required-variables`)
-  setup({ silent: true })
-  invarant.is(getMissingVariables(appjson).length, 1)
+
+  setup({ warn: false, verbose: false })
+
+  assert.is(getMissingVariables(appjson).length, 1)
+})
+
+test('getConfigKeys returns keys from app.json and .env', assert => {
+  const appjson = require('./fixtures/merged/app.json')
+  const dotEnv = readDotEnv('./fixtures/merged/.env')
+
+  const actual = getConfigKeys(appjson, dotEnv)
+  const expected = ['APP_VARIABLE', 'NODE_ENV', 'VARIABLE']
+
+  assert.deepEqual(actual, expected)
 })
