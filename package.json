@@ -7,8 +7,7 @@
     "test": "npm run lint && ava",
     "watch": "npm run build -- --watch",
     "prebuild": "rm -rf lib",
-    "build": "babel src --out-dir lib",
-    "prepublish": "echo \"Publish with ./scripts/publish.sh instead\"; exit 1;"
+    "build": "babel src --out-dir lib"
   },
   "ava": {
     "require": "babel-register",
