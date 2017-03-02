@@ -12,12 +12,9 @@
     "prepublish": "npm run build",
     "postpublish": "npm run clean"
   },
-  "bin": {
-    "config-variables": "cli.js"
-  },
   "files": [
     "helpers.js",
-    "cli.js",
+    "setup.js",
     "index.js"
   ],
   "ava": {
