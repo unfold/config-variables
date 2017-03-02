@@ -10,7 +10,7 @@
     "prebuild": "rm -rf lib",
     "build": "babel src --out-dir .",
     "prepublish": "npm run build",
-    "postpublish": "npm run clean"
+    "postpublish": "npm run clean && git push origin master"
   },
   "files": [
     "helpers.js",
