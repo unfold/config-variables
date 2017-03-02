@@ -1,11 +1,33 @@
-import setup from './setup'
+import path from 'path'
+import {
+  readAppjson,
+  readDotEnv,
+  flattenAppjsonVariables,
+  injectConfig,
+  reportMissingVariables,
+  reportCurrentConfig,
+  getMissingVariables,
+  getConfigKeys,
+} from './helpers'
 
-//  Automatically reads, applies and report missing variables on require
-//
-//  Example in npm script:
-//  "start": "node -r config-variables ./src/app.js"
-//
-//  Example in entry file:
-//  import 'config-variables'
+export default ({
+  appJsonPath = path.join(process.cwd(), 'app.json'),
+  dotEnvPath = path.join(process.cwd(), '.env'),
+  warn = true,
+  verbose = true,
+} = {}) => {
+  const appjson = readAppjson(appJsonPath)
+  const envConfig = readDotEnv(dotEnvPath)
+  const appConfig = flattenAppjsonVariables(appjson)
 
-setup()
+  const config = { ...appConfig, ...envConfig }
+  injectConfig(config)
+
+  if (warn) {
+    reportMissingVariables(getMissingVariables(appjson))
+  }
+
+  if (verbose) {
+    reportCurrentConfig(getConfigKeys(appjson, envConfig))
+  }
+}
