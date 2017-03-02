@@ -14,6 +14,11 @@ test('Silently fail if no app.json or .env file', assert => {
   assert.notThrows(setup)
 })
 
+test('Throws error if app.json contains syntax errors', assert => {
+  process.chdir(`${__dirname}/fixtures/syntax-error-app-json`)
+  assert.throws(setup)
+})
+
 test('Flattens Appjson variables', assert => {
   const appJson = { env: { a: 1, b: { value: 2 } } }
   assert.deepEqual(flattenAppjsonVariables(appJson), { a: 1, b: 2 })
