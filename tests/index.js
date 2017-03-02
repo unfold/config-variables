@@ -1,13 +1,13 @@
 /* eslint-disable import/no-extraneous-dependencies, global-require, import/newline-after-import, max-len */
 
 import test from 'ava'
-import setup from './src/setup'
+import setup from '../src/setup'
 import {
   flattenAppjsonVariables,
   getConfigKeys,
   getMissingVariables,
   readDotEnv,
-} from './src/helpers'
+} from '../src/helpers'
 
 test('Silently fail if no app.json or .env file', assert => {
   process.chdir(`${__dirname}/fixtures/empty`)
