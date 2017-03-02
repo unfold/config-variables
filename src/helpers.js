@@ -1,18 +1,19 @@
-import { isError, attempt, reduce, isObject, isUndefined } from 'lodash'
+import { reduce, isObject, isUndefined } from 'lodash'
 import dotenv from 'dotenv'
 import fs from 'fs'
 import chalk from 'chalk'
 
-export const readAppjson = filePath => {
-  // eslint-disable-next-line global-require
-  const appjson = attempt(() => require(filePath))
-  return isError(appjson) ? undefined : appjson
-}
+const attemptPath = (filePath, callback) => (
+  fs.existsSync(filePath) ? callback(filePath) : undefined
+)
 
-export const readDotEnv = filePath => {
-  const config = attempt(() => dotenv.parse(fs.readFileSync(filePath)))
-  return isError(config) ? undefined : config
-}
+export const readAppjson = filePath => (
+  attemptPath(filePath, () => require(filePath)) // eslint-disable-line global-require
+)
+
+export const readDotEnv = filePath => (
+  attemptPath(filePath, () => dotenv.parse(fs.readFileSync(filePath)))
+)
 
 export const flattenAppjsonVariables = (appjson = {}) =>
   reduce(appjson.env, (variables, variable, name) => {
