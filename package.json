@@ -3,7 +3,7 @@
   "version": "1.1.0",
   "description": "Config for you project that cascades app.json, .env and process.env",
   "scripts": {
-    "lint": "eslint src test.js",
+    "lint": "eslint src tests",
     "test": "npm run lint && ava tests",
     "watch": "npm run build -- --watch",
     "clean": "node -e 'console.log(require(\"./package\").files.join(\"\\n\"))' | xargs rm",
