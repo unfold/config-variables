@@ -4,11 +4,22 @@
   "description": "Config for you project that cascades app.json, .env and process.env",
   "scripts": {
     "lint": "eslint src test.js",
-    "test": "npm run lint && ava",
+    "test": "npm run lint && ava tests",
     "watch": "npm run build -- --watch",
+    "clean": "node -e 'console.log(require(\"./package\").files.join(\"\\n\"))' | xargs rm",
     "prebuild": "rm -rf lib",
-    "build": "babel src --out-dir lib"
+    "build": "babel src --out-dir .",
+    "prepublish": "npm run build",
+    "postpublish": "npm run clean"
   },
+  "bin": {
+    "config-variables": "cli.js"
+  },
+  "files": [
+    "helpers.js",
+    "cli.js",
+    "index.js"
+  ],
   "ava": {
     "require": "babel-register",
     "babel": "inherit"
