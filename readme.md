@@ -52,10 +52,11 @@ AUTH_KEY=okp3vopq23s2sd3es4j42k
 If you have a multiple configs in a [monorepo](https://github.com/babel/babel/blob/master/doc/design/monorepo.md) or don't want to store your configs at the root, you can set custom paths with `config-variables/lib/setup`.
 
 ```js
-const configSetup = require('config-variables/lib/setup')
+const setup = require('config-variables/setup')
+const development = process.env.NODE_ENV !== 'production'
 
-configSetup({
+setup({
 	appJsonPath: 'src/server/app.json',
-	dotEnvPath: 'src/server/.key-value-config',
+	dotEnvPath: development ? '.development' : '.production',
 })
 ```

@@ -1,7 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies, global-require, import/newline-after-import, max-len */
 
 import test from 'ava'
-import setup from '../src/index'
+import setup from '../src/setup'
 import {
   flattenAppjsonVariables,
   getConfigKeys,
