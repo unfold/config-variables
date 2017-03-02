@@ -3,16 +3,12 @@ import dotenv from 'dotenv'
 import fs from 'fs'
 import chalk from 'chalk'
 
-const attemptPath = (filePath, callback) => (
-  fs.existsSync(filePath) ? callback(filePath) : undefined
-)
-
 export const readAppjson = filePath => (
-  attemptPath(filePath, () => require(filePath)) // eslint-disable-line global-require
+  fs.existsSync(filePath) ? require(filePath) : undefined  // eslint-disable-line global-require
 )
 
 export const readDotEnv = filePath => (
-  attemptPath(filePath, () => dotenv.parse(fs.readFileSync(filePath)))
+  fs.existsSync(filePath) ? dotenv.parse(fs.readFileSync(filePath)) : undefined
 )
 
 export const flattenAppjsonVariables = (appjson = {}) =>
