@@ -15,7 +15,7 @@ require('config-variables')
 or use node's [preload option](https://nodejs.org/api/cli.html#cli_r_require_module) in your package.json scripts
 ```json
 "scripts": {
-	"start": "node -r config-variables src/index.js"
+  "start": "node -r config-variables src/index.js"
 }
 ```
 
@@ -25,14 +25,14 @@ If you have an existing `.env` or `app.json` file in your projects, your config 
 If you depend on variables for your app to run, set the requirement in app.json at your project root.
 ```json
 {
-	"name": "My Project",
-	"env": {
-		"API_ENDPOINT": "http://prod.api.io/endpoint",
-		"AUTH_KEY": {
-			"required": true,
-			"description": "Authentication key for OAuth"
-		}
-	}
+  "name": "My Project",
+  "env": {
+    "API_ENDPOINT": "http://prod.api.io/endpoint",
+    "AUTH_KEY": {
+      "required": true,
+      "description": "Authentication key for OAuth"
+    }
+  }
 }
 ```
 
@@ -56,7 +56,7 @@ const setup = require('config-variables/setup')
 const development = process.env.NODE_ENV !== 'production'
 
 setup({
-	appJsonPath: 'src/server/app.json',
-	dotEnvPath: development ? '.development' : '.production',
+  appJsonPath: 'src/server/app.json',
+  dotEnvPath: development ? '.development' : '.production',
 })
 ```
