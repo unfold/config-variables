@@ -1,5 +1,5 @@
 # Config Variables [![CircleCI](https://circleci.com/gh/unfold/config-variables/tree/master.svg?style=svg)](https://circleci.com/gh/unfold/config-variables/tree/master)
-Ensures your config variables are accessible at ` process.env[variable]`. Leverages [app.json-schema](https://devcenter.heroku.com/articles/app-json-schema) for requirements, descriptions and default values, and .env file for local overwrite in development.
+Ensures your config variables are accessible via ` process.env[variable]`. Leverages [app.json-schema](https://devcenter.heroku.com/articles/app-json-schema) for requirements, descriptions and default values, and a `.env` file for overwrites in development.
 
 ## Setup
 Install [config-variables](https://www.npmjs.com/package/config-variables) from NPM
@@ -19,7 +19,7 @@ or use node's [preload option](https://nodejs.org/api/cli.html#cli_r_require_mod
 }
 ```
 
-If you have an existing `.env` or `app.json` file in your projects, your config variables should now be accessible within your code at `process.env[variable]`.
+If you have an existing `.env` or `app.json` file in your projects, your config variables should now be accessible within your code via `process.env[variable]`.
 
 ## Setting defaults and requirements
 If you depend on variables for your app to run, set the requirement in app.json at your project root.
